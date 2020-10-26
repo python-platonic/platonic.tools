@@ -10,14 +10,15 @@ Data structures for Clean Architecture applications in Python.
 
 |                 | queue             | iterable | dict | list | set | graph |
 | ---             | ---               | ---      | ---  | ---  | --- | ---   |
-| Amazon DynamoDB | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| Amazon SimpleDB | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| Amazon SQS      | [✔](sqs/queue.md) | 🔧       | ❌    | 🔧   | 🔧  | 🔧    |
-| Amazon S3       | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| Apache Kafka    | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| MongoDB         | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| MySQL           | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| Local FS        | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| OrientDB        | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| PostgreSQL      | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
-| Redis           | 🔧                | 🔧       | 🔧   | 🔧   | 🔧  | 🔧    |
+| Amazon DynamoDB |                   |          |      |      |     |      |
+| Amazon SimpleDB |                   |          |      |      |     |      |
+| Amazon SQS      | [✔](sqs/queue.md) |          | ❌    |      |     |      |
+| Amazon S3       |                   |          |      |      |     |      |
+| Apache Kafka    |                   |          |      |      |     |      |
+| Azure CosmosDB  |                   |          |      |      |     |      |
+| MongoDB         |                   |          |      |      |     |      |
+| MySQL           |                   |          |      |      |     |      |
+| Local FS        |                   |          |      |      |     |      |
+| OrientDB        |                   |          |      |      |     |      |
+| PostgreSQL      |                   |          |      |      |     |      |
+| Redis           |                   |          |      |      |     |      |

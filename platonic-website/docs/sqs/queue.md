@@ -1,11 +1,42 @@
 # SQS: Queue
 
-* Data structure: [Queue](structures/queue.md)
-* Backend: [SQS](sqs/)
+* Data structure: [Queue](/structures/queue/)
+* Backend: [SQS](/sqs/)
 
-> **TODO:** Make this somewhat human readable and more generic
+Amazon Simple Queue Service is the default choice to communicate data between services on AWS. It comes in two flavors: Standard and FIFO.
 
-## Send a message
+|          | Standard       | FIFO         |
+| ---      | ---            | ---          |
+| Delivery | At Least Once  | Exactly Once |
+| Order    | Not guaranteed | Guaranteed   |
+| Price    | Lower :)       | Higher :(    |
+
+**Visibility timeout** is an important parameter of an SQS queue: it defines how much time the receiver has to process the message and acknowledge it. If the receiver fails to acknowledge the message before timeout expires, the message becomes available for processing again, and thus can be processed multiple times. 
+
+## Pricing
+
+!!! todo
+    Interactivity:
+    
+    * idyll-lang.org
+    * tangle.js
+    * Wolfram widgets
+    * https://github.com/explorableexplanations/explorableexplanations.github.io/blob/master/-data/explorables.csv
+    * ...?
+
+## Creating a queue
+
+!!! note
+    `platonic-sqs` is not responsible for creating the queue for you.
+
+!!! todo
+    At least some help or links are necessary.
+
+You can create queues manually in AWS console, but an automated solution like Terraform, AWS CDK, or AWS Cloudformation is recommended.
+
+Whatever solution you choose, `platonic-sqs` will require the unique identifier — the URL — of your queue.
+
+## Sending a message
 
 ```pycon
 >>> from platonic.sqs.queue import SQSOutputQueue

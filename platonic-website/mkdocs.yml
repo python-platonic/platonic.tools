@@ -4,8 +4,13 @@ nav:
   - Queue: structures/queue.md
   - SQS:
       - Queue: sqs/queue.md
+  - Extra:
+      - DDD: ddd.md
 
 markdown_extensions:
   - admonition
   - codehilite
   - mkautodoc
+
+theme:
+  name: material
