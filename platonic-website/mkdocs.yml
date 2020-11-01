@@ -1,9 +1,11 @@
 site_name: python-platonic
 
 nav:
-  - Queue: structures/queue.md
-  - SQS:
-      - Queue: sqs/queue.md
+  - Structures:
+      - Introduction: structures/index.md
+      - Queue: structures/queue/index.md
+  - Amazon SQS:
+      - SQS Queue: sqs/queue.md
   - Extra:
       - Typecasts: typecasts.md
       - DDD: ddd.md
