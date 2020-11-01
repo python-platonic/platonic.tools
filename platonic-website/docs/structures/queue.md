@@ -1,48 +1,157 @@
 # Queue
 
-`platonic` views queues as a method of communication between threads, processes, services, and systems with each other. Queue is a one-way communication medium: one system is sending messages, and the other is receiving them.
+[![Queue](queue.png)](https://whimsical.com/9FrduJ8TXTaKaQH33Sjiya)
 
-Messages are usually encapsulating units of work, tasks to run, pieces of data to process.
+`platonic` views queues as a method of communication between threads, processes, services, and systems with each other. Queue is a one-way communication medium: one system is sending messages, and the other is receiving them.
 
 ## Properties
 
-Every queue is represented by two Python objects: `Sender` and `Receiver`. Obviously, you can use the first to send messages to queue and the latter to retrieve them.
+Platonic queues are somewhat careless.
 
-* Order of messages is generally not guaranteed to be preserved;
-* The same message should be delivered at least once (if the backend is feeling well),
-* And (depending on the backend) the message may be delivered more than once.
+* Order of messages is generally **not guaranteed** to be preserved;
+* The same message should be delivered **at least once** (if the backend is feeling well),
+* And (depending on the backend) the message **may be delivered more than once**.
+
+These lousy properties are determined by the queue's backend, though. For example, the `Simple` backend guarantees order and delivers messages exactly once, whereas `SQS` in the simplest case does neither of that. See below for their comparison.
+
+## Backends
+
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2"></th>
+            <th rowspan="2" style="vertical-align: middle">Simple</th>
+            <th colspan="2" align="center">
+                <a href="/sqs/queue/">SQS</a>
+            </th>
+        </tr>
+        <tr>
+            <th>Standard</th>
+            <th>FIFO</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>
+                <a href="#delivery-guarantees">Delivery Guarantees</a>
+            </th>
+            <td>=1</td>
+            <td>⩾1</td>
+            <td>=1</td>
+        </tr>
+        <tr>
+            <th>
+                <a href="#order-preservation">Order Preserved</a>
+            </th>
+            <td>✔</td>
+            <td>❌</td>
+            <td>✔</td>
+        </tr>
+    </tbody>
+</table>
+
+### Delivery guarantees
+
+| Code | Name          | Definition |
+| ---  | ---           | ---        |
+| ⩽1   | At most Once  | Messages will not be duplicated, but may be lost.
+| =1   | Exactly Once  | Messages will be neither lost nor duplicated. You will receive every distinct message exactly once.
+| ⩾1   | At Least Once | Messages will not be lost, but can be duplicated.
+
+[This StackOverflow question](https://stackoverflow.com/q/44204973) has a few good answers explaining these concepts.
+
+### Order preservation
+
+If the backend garantees order, the messages are received in the precise order in which they were sent. For example, if message `M1` was sent before `M2`, you will not receive `M2` first and then `M1`.
+
+If backend is a multi-tenant distributed system, order preservation may require extra effort and cause performance penalty. That is why, say, SQS provides this property as an optional feature for extra pay.
+
+## Python Classes
+
+In a Python program, queue is represented using backend-specific subclasses of `platonic.queue.Receiver` and `platonic.queue.Sender` classes.
+
+!!! note
+    You will not use these classes directly if you are not building an implementation for a new backend. Instead, you will typically use backend-specific classes like `platonic.sqs.queue.Receiver` or `platonic.simple.queue.Sender`. Refer to pages of specific backends for details and examples.
 
 ## Sender
 
-Only supports two operations:
+### `send()` one message
 
-::: platonic.queue.OutputQueue
-    :members: send send_many
+```python
+sender.send(Cat(name='Kitty'))
+```
 
-If you only have to send one message, naturally use `send()`. If you need to send multiple messages, `send_many()`, which accepts an iterable, may offer benefits in terms of performance and/or price, because it leverages low-level batch APIs the backend provides.
+The program will block until the message is sent.
+
+### `send_many()` messages
+
+```python
+sender.send_many([
+    Cat(name='Kitty'),
+    Cat(name='Mindy'),
+    ...
+])
+```
+
+Accepts an iterable. Program will block until the iterable is exhausted and all of its values are sent.
 
 ## Receiver
 
-::: platonic.queue.InputQueue
-    :docstring:
-    :members: receive receive_with_timeout __iter__
+### `receive()` new message
 
-`receive()` is a blocking call. If the queue is empty at the moment, it will block until a message arrives and thus keep your program wait for it.
+```pycon
+>>> receiver.receive().value
+Cat(name='Tibbles')
+```
 
-`receive_with_timeout()` will either return a message from queue or, if it is empty, wait for specified number of seconds. If nothing is there - you will get an exception raised.
+Will block until a message arrives.
 
-And finally, you can just iterate over the `Receiver` object and get all messages one by one.
+### `receive_with_timeout()`: patience has limits
 
-### Acknowledgement
+```pycon
+>>> receiver.receive_with_timeout(timeout=30).value
+Cat(name='Tibbles')
+```
 
-Sometimes, the receiver can receive the message but fail to successfully process it due to whatever reason you can imagine: bug in code, failed database instance, server restart, network glitch. That is why we require the receiver to **acknowledge** every message it has successfully processed, using one of the following methods. 
+`receive_with_timeout()` will wait for a message from queue during the specified number of seconds. If queue is empty and nothing appears there during that period, you will get an exception raised:
 
-::: platonic.queue.InputQueue
-    :docstring:
-    :members: acknowledge acknowledgement
-    
+!!! error
+    ::: platonic.queue.errors.MessageReceiveTimeout
+        :docstring:
+
+### `for message in receiver` iteration
+
+You can just iterate over the `Receiver` object and get all messages one by one. (See below for an example.)
+
+### `acknowledge()` a message
+
+Sometimes, the receiver can receive the message but fail to successfully process it due to whatever reason you can imagine: bug in code, failed database instance, server restart, network glitch.
+
+That is why we require the receiver to **acknowledge** every message it has successfully processed. Like this:
+
+```python
+message = receiver.receive()
+do_something_with(message.value)
+receiver.acknowledge(message)
+```
+
 If message is not acknowledged, it will later reappear in the queue for the same (or another) receiver to process it again. That is how queues improve stability of our systems.
 
-## Implementations
+### `with acknowledgement()` context manager
 
-* [SQS](/sqs/queue/)
+Simplifies your client code a bit and makes it more declarative, like this:
+
+```python
+message = receiver.receive()
+
+with receiver.acknowledgement(message):
+    do_something_with(message.value)
+```
+
+Another very often used pattern:
+
+```python
+for message in receiver:
+    with receiver.acknowledgement(message):
+        do_something_with(message.value)
+```
