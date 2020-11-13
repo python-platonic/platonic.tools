@@ -124,11 +124,7 @@ Will block until a message arrives.
 Cat(name='Tibbles')
 ```
 
-`receive_with_timeout()` will wait for a message from queue during the specified number of seconds. If queue is empty and nothing appears there during that period, you will get an exception raised:
-
-!!! error
-    ::: platonic.queue.errors.MessageReceiveTimeout
-        :docstring:
+`receive_with_timeout()` will wait for a message from queue during the specified number of seconds. If queue is empty and nothing appears there during that period, you will get an exception raised: `MessageReceiveTimeout`.
 
 ### `for message in receiver` iteration
 
