@@ -4,6 +4,12 @@
 | ---                         | ---                        | ---                                |
 | [Queue](/structures/queue/) | `pip install platonic-sqs` | [SQS](https://aws.amazon.com/sqs/) |
 
+## Installation
+
+```bash
+pip install platonic-sqs>=1.0.1
+```
+
 ## What is SQS?
 
 Amazon Simple Queue Service is the default choice to communicate data between services on AWS.
@@ -33,7 +39,7 @@ Before using an SQS queue, you have to create it. `platonic` is not responsible 
 
 Whatever solution you choose, `platonic-sqs` will require **the unique identifier — the URL — of your queue**.
 
-## SQS Sender
+## Sending a message
 
 ```python
 from platonic.sqs.queue import SQSSender
@@ -41,60 +47,43 @@ from platonic.sqs.queue import SQSSender
 
 class NumbersOut(SQSSender[int]):
     """Sending out a stream of random numbers."""
-    url = ...     # Provide the URL of your queue
+    url = 'https://sqs.us-west-2.amazonaws.com/123456789012/queue-name'
 
 
 numbers_out = NumbersOut()
-```
 
-::: platonic.sqs.queue.SQSSender
-    :docstring:
-    :members: __init__ send send_many
-
-## Sending a message
-
-```pycon
->>> from platonic.sqs.queue import SQSOutputQueue
-
-
->>> class ControlQueue(SQSOutputQueue[int]):
-...     """Send encoded commands to a Martian rover via SQS."""
-
->>> output = ControlQueue(url=...)
->>> output.send(15)
->>> output.send_many([1, 1, 2, 3, 5, 8, 13])
+numbers_out.send(15)
+numbers_out.send_many([1, 1, 2, 3, 5, 8, 13])
 ```
 
 ## Receive and acknowledge a message
 
-```pycon
->>> from platonic.sqs.queue import SQSInputQueue
+```python
+from platonic.sqs.queue import SQSInputQueue
 
->>> class RoverQueue(SQSInputQueue[int]):
-...     """Receive the commands from Earth."""
+class RoverQueue(SQSInputQueue[int]):
+    """Receive the commands from Earth."""
 
->>> input = RoverQueue(url=...)
+input = RoverQueue(url=...)
 
 # If the queue is empty, this call with block until there is a message.
->>> cmd = input.receive()
->>> cmd.value
-15
+cmd = input.receive()
+assert cmd.value == 15
 
 # And now this must be acknowledged.
->>> input.acknowledge(cmd)
+input.acknowledge(cmd)
 
 # This call will raise MessageReceiveTimeout exception if nothing appears at
 # the queue during the specified time frame.
->>> cmd = input.receive_with_timeout(timeout=5)
->>> cmd.value
-1
->>> input.acknowledge(cmd)
+cmd = input.receive_with_timeout(timeout=5)
+assert cmd.value == 1
+input.acknowledge(cmd)
 
 # Or, you can do differently:
->>> for message in input:
-...     with input.acknowledgement(message):
-...         print(message.value)
-1
-2
-...
+for message in input:
+    with input.acknowledgement(message):
+        print(message.value)
+# 1
+# 2
+# ...
 ```

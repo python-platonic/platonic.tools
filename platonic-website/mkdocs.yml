@@ -1,4 +1,8 @@
 site_name: python-platonic
+repo_url: https://github.com/python-platonic/
+repo_name: python-platonic
+edit_uri: website/edit/master/platonic-website/docs/
+copyright: Copyright &copy; 2020 python-platonic
 
 nav:
   - Structures:
@@ -21,6 +25,9 @@ markdown_extensions:
 
 theme:
   name: material
+  logo: assets/platonic.png
+  favicon: assets/platonic-favicon.png
+  custom_dir: overrides
   palette:
     primary: teal
     scheme: slate
