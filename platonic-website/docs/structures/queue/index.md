@@ -4,16 +4,6 @@
 
 `platonic` views queues as a method of communication between threads, processes, services, and systems with each other. Queue is a one-way communication medium: one system is sending messages, and the other is receiving them.
 
-## Properties
-
-Platonic queues are somewhat careless.
-
-* Order of messages is generally **not guaranteed** to be preserved;
-* The same message should be delivered **at least once** (if the backend is feeling well),
-* And (depending on the backend) the message **may be delivered more than once**.
-
-These lousy properties are determined by the queue's backend, though. For example, the `Simple` backend guarantees order and delivers messages exactly once, whereas `SQS` in the simplest case does neither of that. See below for their comparison.
-
 ## Backends
 
 <table>
@@ -45,6 +35,27 @@ These lousy properties are determined by the queue's backend, though. For exampl
             </th>
             <td>✔</td>
             <td>❌</td>
+            <td>✔</td>
+        </tr>
+        <tr>
+            <th colspan="4" align="center">Communicate</th>
+        </tr>
+        <tr>
+            <th>Between Threads</th>
+            <td>✔</td>
+            <td>✔</td>
+            <td>✔</td>
+        </tr>
+        <tr>
+            <th>Between Processes</th>
+            <td>❌</td>
+            <td>✔</td>
+            <td>✔</td>
+        </tr>
+        <tr>
+            <th>Between Machines</th>
+            <td>❌</td>
+            <td>✔</td>
             <td>✔</td>
         </tr>
     </tbody>

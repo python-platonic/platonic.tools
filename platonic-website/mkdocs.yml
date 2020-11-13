@@ -21,3 +21,9 @@ markdown_extensions:
 
 theme:
   name: material
+  palette:
+    primary: teal
+    scheme: slate
+  features:
+    - navigation.tabs
+    - header.autohide
