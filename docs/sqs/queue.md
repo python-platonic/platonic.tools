@@ -1,13 +1,13 @@
 # SQS: Queue
 
-| Data structure              | pip                        | Backend                            |
-| ---                         | ---                        | ---                                |
-| [Queue](/structures/queue/) | `pip install platonic-sqs` | [SQS](https://aws.amazon.com/sqs/) |
+| Data structure              | Backend                            |
+| ---                         | ---                                |
+| [Queue](/structures/queue/) | [SQS](https://aws.amazon.com/sqs/) |
 
 ## Installation
 
 ```bash
-pip install platonic-sqs>=1.0.1
+pip install platonic-sqs
 ```
 
 ## What is SQS?
