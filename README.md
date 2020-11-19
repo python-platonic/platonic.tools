@@ -1,4 +1,4 @@
-# platonic-website
+# platonic.tools
 
 [![Build Status](https://travis-ci.com/python-platonic/platonic-website.svg?branch=master)](https://travis-ci.com/python-platonic/platonic-website)
 [![Coverage](https://coveralls.io/repos/github/python-platonic/platonic-website/badge.svg?branch=master)](https://coveralls.io/github/python-platonic/platonic-website?branch=master)
