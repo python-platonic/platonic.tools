@@ -1,18 +1,8 @@
 site_name: python-platonic
 repo_url: https://github.com/python-platonic/
 repo_name: python-platonic
-edit_uri: website/edit/master/platonic-website/docs/
-copyright: Copyright &copy; 2020 python-platonic
-
-nav:
-  - Structures:
-      - Introduction: structures/index.md
-      - Queue: structures/queue/index.md
-  - Amazon SQS:
-      - SQS Queue: sqs/queue.md
-  - Extra:
-      - Typecasts: typecasts.md
-      - DDD: ddd.md
+edit_uri: website/edit/master/platonic.tools/docs/
+copyright: Copyright &copy; 2021 python-platonic
 
 markdown_extensions:
   - admonition
