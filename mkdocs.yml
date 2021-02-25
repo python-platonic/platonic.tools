@@ -6,12 +6,27 @@ copyright: Copyright &copy; 2021 python-platonic
 
 markdown_extensions:
   - admonition
-  - codehilite
+  - pymdownx.highlight
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - mkautodoc
   - attr_list
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.superfences
+      # make exceptions to highlighting of code:
+#      custom_fences:
+#        - name: mermaid
+#          class: mermaid
+#          format: !!python/name:mermaid2.fence_mermaid
+
+plugins:
+  - search
+  - macros
+#  - mermaid2
 
 theme:
   name: material
@@ -24,3 +39,6 @@ theme:
   features:
     - navigation.tabs
     - header.autohide
+
+extra_css:
+  - css/custom.css
