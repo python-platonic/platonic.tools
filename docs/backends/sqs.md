@@ -44,13 +44,9 @@ Whatever solution you choose, `platonic-sqs` will require **the unique identifie
 ```python
 from platonic.sqs.queue import SQSSender
 
-
-class NumbersOut(SQSSender[int]):
-    """Sending out a stream of random numbers."""
-    url = 'https://sqs.us-west-2.amazonaws.com/123456789012/queue-name'
-
-
-numbers_out = NumbersOut()
+numbers_out = SQSSender[int](
+    url='https://sqs.us-west-2.amazonaws.com/123456789012/queue-name',
+)
 
 numbers_out.send(15)
 numbers_out.send_many([1, 1, 2, 3, 5, 8, 13])
@@ -59,12 +55,15 @@ numbers_out.send_many([1, 1, 2, 3, 5, 8, 13])
 ## Receive and acknowledge a message
 
 ```python
-from platonic.sqs.queue import SQSInputQueue
+from platonic.sqs.queue import SQSReceiver
+from platonic.timeout import ConstantTimeout
+from datetime import timedelta
 
-class RoverQueue(SQSInputQueue[int]):
-    """Receive the commands from Earth."""
-
-input = RoverQueue(url=...)
+input = SQSInputQueue[int](
+    url=...,
+    # Thus we prevent the receiver from blocking forever if queue is empty
+    timeout=ConstantTimeout(period=timedelta(minutes=3)),
+)
 
 # If the queue is empty, this call with block until there is a message.
 cmd = input.receive()
@@ -73,13 +72,7 @@ assert cmd.value == 15
 # And now this must be acknowledged.
 input.acknowledge(cmd)
 
-# This call will raise MessageReceiveTimeout exception if nothing appears at
-# the queue during the specified time frame.
-cmd = input.receive_with_timeout(timeout=5)
-assert cmd.value == 1
-input.acknowledge(cmd)
-
-# Or, you can do differently:
+# Or, you can iterate:
 for message in input:
     with input.acknowledgement(message):
         print(message.value)
@@ -87,3 +80,25 @@ for message in input:
 # 2
 # ...
 ```
+
+## Code
+
+{% set receiver_path = 'platonic.sqs.queue.SQSReceiver' %}
+{% set receiver = import(receiver_path) %}
+
+### {{ receiver_path }}
+
+> {{ receiver.__doc__ }}
+
+{{ receiver | print_dataclass }}
+
+---
+
+{% set sender_path = 'platonic.sqs.queue.SQSSender' %}
+{% set sender = import(sender_path) %}
+
+### {{ sender_path }}
+
+> {{ sender.__doc__ }}
+
+{{ sender | print_dataclass }}

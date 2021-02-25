@@ -1,8 +1,8 @@
 # Queue
 
-[![Queue](queue.png)](https://whimsical.com/9FrduJ8TXTaKaQH33Sjiya)
+<iframe style="border:none" width="800" height="450" src="https://whimsical.com/embed/9FrduJ8TXTaKaQH33Sjiya"></iframe>
 
-`platonic` views queues as a method of communication between threads, processes, services, and systems with each other. Queue is a one-way communication medium: one system is sending messages, and the other is receiving them.
+`platonic` queue is a method of communication between services and systems with each other. Queue is a one-way communication medium: one system is sending messages, and the other is receiving them. The receiving end **MUST** acknowledge a message that has been received and correctly processed. Otherwise, if certain time (known as `visibility timeout`) passes, the message will reappear in the queue like it has never been received.
 
 ## Backends
 
@@ -12,7 +12,7 @@
             <th rowspan="2"></th>
             <th rowspan="2" style="vertical-align: middle">Simple</th>
             <th colspan="2" align="center">
-                <a href="/sqs/queue/">SQS</a>
+                <a href="/backends/sqs/">SQS</a>
             </th>
         </tr>
         <tr>
@@ -73,7 +73,7 @@
 
 ### Order preservation
 
-If the backend garantees order, the messages are received in the precise order in which they were sent. For example, if message `M1` was sent before `M2`, you will not receive `M2` first and then `M1`.
+If the backend guarantees order, the messages are received in the precise order in which they were sent. For example, if message `M1` was sent before `M2`, you will not receive `M2` first and then `M1`.
 
 If backend is a multi-tenant distributed system, order preservation may require extra effort and cause performance penalty. That is why, say, SQS provides this property as an optional feature for extra pay.
 
@@ -82,7 +82,7 @@ If backend is a multi-tenant distributed system, order preservation may require 
 In a Python program, queue is represented using backend-specific subclasses of `platonic.queue.Receiver` and `platonic.queue.Sender` classes.
 
 !!! note
-    You will not use these classes directly if you are not building an implementation for a new backend. Instead, you will typically use backend-specific classes like `platonic.sqs.queue.Receiver` or `platonic.simple.queue.Sender`. Refer to pages of specific backends for details and examples.
+    You will not use these classes directly if you are not building an implementation for a new backend. Instead, you will typically use backend-specific classes like `platonic.sqs.SQSReceiver` or `platonic.simple.queue.Sender`. Refer to pages of specific backends for details and examples.
 
 ## Sender
 
@@ -108,6 +108,12 @@ Accepts an iterable. Program will block until the iterable is exhausted and all 
 
 ## Receiver
 
+```python
+receiver = CustomReceiver[Cat](..., timeout=InfiniteTimeout())
+```
+
+`timeout` class indicates whether the `receive()` and `__iter__()` functions will block forever or wait for the amount of time specified by the `Timeout` class. For available classes, see [Timeouts](/supplementals/timeouts/).
+
 ### `receive()` new message
 
 ```pycon
@@ -115,16 +121,7 @@ Accepts an iterable. Program will block until the iterable is exhausted and all 
 Cat(name='Tibbles')
 ```
 
-Will block until a message arrives.
-
-### `receive_with_timeout()`: patience has limits
-
-```pycon
->>> receiver.receive_with_timeout(timeout=30).value
-Cat(name='Tibbles')
-```
-
-`receive_with_timeout()` will wait for a message from queue during the specified number of seconds. If queue is empty and nothing appears there during that period, you will get an exception raised: `MessageReceiveTimeout`.
+If queue is empty and nothing appears there during the period specified by the `timeout` class provided to the receiver, you will get an exception raised: `MessageReceiveTimeout`.
 
 ### `for message in receiver` iteration
 
