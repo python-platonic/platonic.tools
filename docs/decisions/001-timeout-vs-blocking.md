@@ -14,7 +14,7 @@ This function we often had to implement ourselves, creating the boilerplate that
 
 In current implementation, `receive()` and `__iter__()` are using the [ReceiveMessage](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_ReceiveMessage.html) API call without `WaitTimeSeconds` parameter, which means they rely upon [short polling instead of long polling](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html).
 
-Short polling means we only query a subset of SQS servers to optimize by performance. Since we repeat the call in cycle, we are likely to pay for a handful of empty receive events.
+Short polling means we only query a subset of SQS servers to optimize for performance. Since we repeat the call in cycle, we are likely to pay for a handful of empty receive events.
 
 ### Timeout length
 
@@ -51,8 +51,13 @@ with timeout.timer() as as timer:
         ...  # do something
 ```
 
+An `ConstantTimeout` or `InfiniteTimeout` instance is going to be passed to constructor of the queue. 
+
 ## Consequences
 
 We will easily iterate over a queue using the iterator protocol - this is both idiomatic and will support timeouts.
 
 I believe that, in most cases, when having created a queue, people will only care about blocking operations or about operations that timeout, not both at the same queue object.
+
+!!! info
+    The idea originated from a discussion with [Artem Malyshev](https://github.com/proofit404). Grazie mille!

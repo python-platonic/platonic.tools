@@ -1,4 +1,6 @@
-# Typecasts
+---
+title: Typecasts
+---
 
 This is a repository of type conversions. `typecasts` knows how to convert value of one type into a value of another.
 

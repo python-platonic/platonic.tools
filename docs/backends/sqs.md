@@ -1,4 +1,4 @@
-# SQS: Queue
+# SQS/Queue
 
 | Data structure              | Backend                            |
 | ---                         | ---                                |
