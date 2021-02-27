@@ -1,8 +1,8 @@
-from typing import Any, List, Iterable
+import dataclasses
 from pydoc import locate
+from typing import List, Iterable
 
 from mkdocs_macros.plugin import MacrosPlugin
-import dataclasses
 
 
 def markdown_table_as_list(
