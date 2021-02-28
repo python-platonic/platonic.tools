@@ -1,12 +1,16 @@
+import abc
 import dataclasses
 import inspect
-import itertools
 import textwrap
-from pathlib import Path
+from functools import cached_property
 from typing import Optional, List
 
-import jinja2
-from generic_args import generic_type_args
+from main import md
+
+
+def class_name(python_class: type) -> str:
+    """Return class name."""
+    return python_class.__name__
 
 
 @dataclasses.dataclass()
@@ -15,11 +19,12 @@ class ClassMember:
 
     name: str
     method: callable
+    header_level: int = 3
 
     @property
     def docstring(self) -> str:
         """Method docstring."""
-        return self.method.__doc__
+        return textwrap.dedent(self.method.__doc__)
 
     @property
     def signature(self) -> inspect.Signature:
@@ -48,16 +53,26 @@ class ClassMember:
 
         return None
 
+    @cached_property
+    def header(self):
+        """Construct the header."""
+        return f'{self.name}{self.signature}'
 
-@dataclasses.dataclass(init=False, repr=False)
+    def __iter__(self):
+        """Construct Markdown description of the member."""
+        yield md.Header(self.header, level=self.header_level)
+        yield md.Quote(self.docstring)
+
+    def __str__(self):
+        return str(md.Fragment(list(self)))
+
+
+@dataclasses.dataclass(repr=False)
 class PrintClass:
     """Print class."""
 
     cls: type
-
-    def __init__(self, cls: type) -> None:
-        """Initialize the class."""
-        self.cls = cls
+    header_level: int = 2
 
     @property
     def object_path(self) -> str:
@@ -75,7 +90,7 @@ class PrintClass:
     def name(self):
         return self.cls.__name__
 
-    @property
+    @cached_property
     def docstring(self) -> str:
         """Docstring of the class."""
         return self.cls.__doc__
@@ -101,51 +116,43 @@ class PrintClass:
         ]
 
         return [
-            ClassMember(name=name, method=method)
+            ClassMember(
+                name=name,
+                method=method,
+                header_level=self.header_level + 1,
+            )
             for name, method in members
         ]
 
-    def __str__(self):
-        """Representation."""
-        env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(Path(__file__).parent.parent / 'templates'),
-        )
-        template = env.get_template('class.md')
-        return template.render(this=self)
-
     @property
-    def type_args(self):
-        return list(generic_type_args(self.cls))
+    def superclasses(self) -> Optional[md.List]:
+        """List of superclasses."""
+        bases = self.cls.__bases__
 
-    # -------------------------------------------------------------------------
+        if bases:
+            return md.List(map(class_name, bases))
 
-    def print_member(self, method_name, method) -> str:
-        """Print the method."""
-        signature = str(inspect.signature(method)).replace('->', '→')
+    @cached_property
+    def modifier(self) -> Optional[md.InlineCode]:
+        """Class modifier."""
+        if issubclass(self.cls, abc.ABC):
+            return md.InlineCode('abstract')
 
-        return textwrap.dedent(
-            f'''
-            ### `{method_name}{signature}`
-            > {method.__doc__}
-            '''
-        )
+        return None
 
-    def print_members(self) -> str:
-        """Print members of the class."""
-        pairs = ...
+    def __iter__(self):
+        """Construct Markdown fragment for class documentation."""
+        header = f'class {self.name}'
+        if self.modifier is not None:
+            header = f'{self.modifier} {header}'
 
-        pairs = [
-            (name, method)
-            for name, method in pairs
-            if (
-                not name.startswith('__')
-                or name == '__init__'
-            )
-        ]
+        yield md.Header(header, level=self.header_level)
 
-        return '\n'.join(
-            itertools.starmap(
-                self.print_member,
-                pairs,
-            )
-        )
+        if self.docstring:
+            yield md.Quote(self.docstring)
+
+        yield from self.members
+
+    def __str__(self):
+        """Render as string."""
+        return str(md.Fragment(list(self)))

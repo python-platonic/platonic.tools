@@ -1,8 +1,17 @@
-# Queue
+---
+title: Queue
+---
+
+- One or more processes, **Sender(s)**, are dispatching messages to a Queue. One or more processes, **Receiver(s)**, are listening to the queue and processing every message.
+- **Receiver** ought to acknowledge every successfully processed message within a specific time period, called **Visibility Timeout**.
+- If **Receiver** fails to do so, the message is sent to that or another **Receiver** again, to make sure it is processed.
 
 <iframe style="border:none" width="800" height="450" src="https://whimsical.com/embed/9FrduJ8TXTaKaQH33Sjiya"></iframe>
 
-`platonic` queue is a method of communication between services and systems with each other. Queue is a one-way communication medium: one system is sending messages, and the other is receiving them. The receiving end **MUST** acknowledge a message that has been received and correctly processed. Otherwise, if certain time (known as `visibility timeout`) passes, the message will reappear in the queue like it has never been received.
+## Use Cases
+
+- An API handler submits tasks to convert video files which are served by multiple workers.
+- A periodic job submits orders to generate heavy PDF reports, which are served by multiple serverless functions.
 
 ## Backends
 
@@ -60,102 +69,3 @@
         </tr>
     </tbody>
 </table>
-
-### Delivery guarantees
-
-| Code | Name          | Definition |
-| ---  | ---           | ---        |
-| ⩽1   | At most Once  | Messages will not be duplicated, but may be lost.
-| =1   | Exactly Once  | Messages will be neither lost nor duplicated. You will receive every distinct message exactly once.
-| ⩾1   | At Least Once | Messages will not be lost, but can be duplicated.
-
-[This StackOverflow question](https://stackoverflow.com/q/44204973) has a few good answers explaining these concepts.
-
-### Order preservation
-
-If the backend guarantees order, the messages are received in the precise order in which they were sent. For example, if message `M1` was sent before `M2`, you will not receive `M2` first and then `M1`.
-
-If backend is a multi-tenant distributed system, order preservation may require extra effort and cause performance penalty. That is why, say, SQS provides this property as an optional feature for extra pay.
-
-## Python Classes
-
-In a Python program, queue is represented using backend-specific subclasses of `platonic.queue.Receiver` and `platonic.queue.Sender` classes.
-
-!!! note
-    You will not use these classes directly if you are not building an implementation for a new backend. Instead, you will typically use backend-specific classes like `platonic.sqs.SQSReceiver` or `platonic.simple.queue.Sender`. Refer to pages of specific backends for details and examples.
-
-## Sender
-
-### `send()` one message
-
-```python
-sender.send(Cat(name='Kitty'))
-```
-
-The program will block until the message is sent.
-
-### `send_many()` messages
-
-```python
-sender.send_many([
-    Cat(name='Kitty'),
-    Cat(name='Mindy'),
-    ...
-])
-```
-
-Accepts an iterable. Program will block until the iterable is exhausted and all of its values are sent.
-
-## Receiver
-
-```python
-receiver = CustomReceiver[Cat](..., timeout=InfiniteTimeout())
-```
-
-`timeout` class indicates whether the `receive()` and `__iter__()` functions will block forever or wait for the amount of time specified by the `Timeout` class. For available classes, see [Timeouts](/supplementals/timeouts/).
-
-### `receive()` new message
-
-```pycon
->>> receiver.receive().value
-Cat(name='Tibbles')
-```
-
-If queue is empty and nothing appears there during the period specified by the `timeout` class provided to the receiver, you will get an exception raised: `MessageReceiveTimeout`.
-
-### `for message in receiver` iteration
-
-You can just iterate over the `Receiver` object and get all messages one by one. (See below for an example.)
-
-### `acknowledge()` a message
-
-Sometimes, the receiver can receive the message but fail to successfully process it due to whatever reason you can imagine: bug in code, failed database instance, server restart, network glitch.
-
-That is why we require the receiver to **acknowledge** every message it has successfully processed. Like this:
-
-```python
-message = receiver.receive()
-do_something_with(message.value)
-receiver.acknowledge(message)
-```
-
-If message is not acknowledged, it will later reappear in the queue for the same (or another) receiver to process it again. That is how queues improve stability of our systems.
-
-### `with acknowledgement()` context manager
-
-Simplifies your client code a bit and makes it more declarative, like this:
-
-```python
-message = receiver.receive()
-
-with receiver.acknowledgement(message):
-    do_something_with(message.value)
-```
-
-Another very often used pattern:
-
-```python
-for message in receiver:
-    with receiver.acknowledgement(message):
-        do_something_with(message.value)
-```
