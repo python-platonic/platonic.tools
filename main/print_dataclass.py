@@ -1,8 +1,5 @@
 import dataclasses
-from pydoc import locate
 from typing import List, Iterable
-
-from mkdocs_macros.plugin import MacrosPlugin
 
 
 def markdown_table_as_list(
@@ -31,9 +28,3 @@ def print_dataclass(cls) -> str:
             for field in dataclasses.fields(cls)
         ]
     ))
-
-
-def define_env(env: MacrosPlugin):
-    """Hook function."""
-    env.macro(locate, name='import')
-    env.filter(print_dataclass)
