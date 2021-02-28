@@ -3,41 +3,10 @@ import inspect
 import itertools
 import textwrap
 from pathlib import Path
-from pydoc import locate
-from typing import List, Iterable, Optional
+from typing import Optional, List
 
 import jinja2
-import typing_inspect
 from generic_args import generic_type_args
-from mkdocs_macros.plugin import MacrosPlugin
-
-
-def markdown_table_as_list(
-    headers: List[str],
-    rows: Iterable[Iterable[str]],
-) -> str:
-    """Create a Markdown table."""
-    yield ' | '.join(headers)
-    yield ' | '.join(' --- ' for _ in headers)
-
-    for row in rows:
-        yield ' | '.join(row)
-
-
-def print_dataclass(cls) -> str:
-    """Print dataclass as table."""
-    return '\n'.join(markdown_table_as_list(
-        headers=['Name', 'Type', 'Default', 'Description'],
-        rows=[
-            map(str, (
-                field.name,
-                field.type.__name__,
-                field.default,
-                field.metadata.get('__doc__', ''),
-            ))
-            for field in dataclasses.fields(cls)
-        ]
-    ))
 
 
 @dataclasses.dataclass()
@@ -139,7 +108,7 @@ class PrintClass:
     def __str__(self):
         """Representation."""
         env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(Path(__file__).parent / 'templates'),
+            loader=jinja2.FileSystemLoader(Path(__file__).parent.parent / 'templates'),
         )
         template = env.get_template('class.md')
         return template.render(this=self)
@@ -180,10 +149,3 @@ class PrintClass:
                 pairs,
             )
         )
-
-
-def define_env(env: MacrosPlugin):
-    """Hook function."""
-    env.macro(locate, name='import')
-    env.filter(print_dataclass)
-    env.filter(PrintClass, name='print_class')
