@@ -37,4 +37,27 @@ mkdocs-macros-plugin = "^0.5.0"
 platonic-sqs = "^1.2.5"
 
 [tool.poetry.dev-dependencies]
-mister-jeeves = "^0.0.2"
+mister-jeeves = "^0.0.3"
+
+# For mypy under Python 3.8
+"backports.cached_property" = "^1.0.0"
+
+[tool.flakehell]
+base = "https://raw.githubusercontent.com/Recall-Masters/standards/main/pyproject.toml"
+
+
+[tool.flakehell.exceptions."main/cached_property.py"]
+# In this file we import a function from two different places depending on
+# Python version.
+wemake-python-styleguide = [
+  # Found block variables overlap: {0}
+  "-WPS440",
+
+  # Found nested import
+  "-WPS433",
+]
+
+pyflakes = [
+  # %r imported but unused
+  "-F401",
+]
