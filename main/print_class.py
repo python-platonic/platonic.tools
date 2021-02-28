@@ -2,7 +2,7 @@ import abc
 import dataclasses
 import inspect
 import textwrap
-from functools import cached_property
+from main.cached_property import cached_property
 from typing import Optional, List
 
 from main import md
