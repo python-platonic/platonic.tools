@@ -35,4 +35,4 @@ def get_object_path(obj: ObjectType) -> str:
 
 @get_object_path.instance(functools.partial)
 def _get_object_path_functools_partial(obj: functools.partial) -> str:
-    return repr(obj)
+    return get_object_path(obj.func)

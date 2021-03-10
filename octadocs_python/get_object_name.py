@@ -23,4 +23,13 @@ def _get_object_name_from_function(obj: types.FunctionType) -> str:
 
 @get_object_name.instance(functools.partial)
 def _get_object_name_from_functools_partial(obj: functools.partial) -> str:
-    return repr(obj)
+    func = get_object_name(obj.func)
+
+    args = f', '.join(map(str, obj.args))
+    kwargs = f', '.join(
+        '='.join(map(str, pair))
+        for pair in obj.keywords.items()
+    )
+
+    arguments = ', '.join(filter(bool, [args, kwargs]))
+    return f'functools.partial({func}, {arguments})'

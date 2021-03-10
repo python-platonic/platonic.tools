@@ -44,6 +44,7 @@ mister-jeeves = "^0.0.3"
 
 # For mypy under Python 3.8
 "backports.cached_property" = "^1.0.0"
+ipython = "^7.21.0"
 
 [tool.flakehell]
 base = "https://raw.githubusercontent.com/Recall-Masters/standards/main/pyproject.toml"
