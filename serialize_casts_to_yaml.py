@@ -52,6 +52,7 @@ def main() -> None:
     print(json.dumps(
         list(serialized),
         indent=4,
+        ensure_ascii=False,
     ))
 
 

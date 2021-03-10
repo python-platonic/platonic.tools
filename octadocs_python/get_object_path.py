@@ -7,11 +7,12 @@ Based on: https://stackoverflow.com/q/2020014/1245471
 import functools
 import inspect
 import types
+from typing import TypeVar, Optional
 
-import typing
+import typing_inspect
 from typeclasses import typeclass
 
-ObjectType = typing.TypeVar('ObjectType')
+ObjectType = TypeVar('ObjectType')
 
 
 @typeclass(ObjectType)
@@ -30,6 +31,17 @@ def get_object_path(obj: ObjectType) -> str:
     return '.'.join((
         module_path,
         qualified_name,
+    ))
+
+
+@get_object_path.instance(types.FunctionType)
+def _get_object_path_function(obj: types.FunctionType) -> Optional[str]:
+    if typing_inspect.is_new_type(obj):
+        return None
+
+    return '.'.join((
+        obj.__module__,
+        obj.__qualname__,
     ))
 
 

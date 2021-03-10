@@ -2,6 +2,8 @@ import functools
 import types
 
 import typing
+
+import typing_inspect
 from typeclasses import typeclass
 
 ObjectType = typing.TypeVar('ObjectType')
@@ -15,9 +17,14 @@ def get_object_name(obj: ObjectType) -> str:
 
 @get_object_name.instance(types.FunctionType)
 def _get_object_name_from_function(obj: types.FunctionType) -> str:
+    if typing_inspect.is_new_type(obj):
+        # NewType is a function with __supertype__ attribute assigned to it.
+        supertype = get_object_name(obj.__supertype__)
+        return f'NewType {obj.__name__}({supertype})'
+
     return '{}.{}'.format(
         obj.__module__,
-        obj.__name__,
+        obj.__qualname__,
     )
 
 
