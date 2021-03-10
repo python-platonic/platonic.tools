@@ -22,8 +22,12 @@ def _get_object_name_from_function(obj: types.FunctionType) -> str:
         supertype = get_object_name(obj.__supertype__)
         return f'NewType {obj.__name__}({supertype})'
 
+    # We only print the module in which function is. We do not print the whole
+    # module path.
+    module_name = obj.__module__.split('.')[-1]
+
     return '{}.{}'.format(
-        obj.__module__,
+        module_name,
         obj.__qualname__,
     )
 
