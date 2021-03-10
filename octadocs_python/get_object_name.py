@@ -2,6 +2,7 @@ import functools
 import types
 
 import typing
+from typing import _GenericAlias
 
 import typing_inspect
 from typeclasses import typeclass
@@ -10,9 +11,24 @@ ObjectType = typing.TypeVar('ObjectType')
 
 
 @typeclass(ObjectType)
-def get_object_name(obj: ObjectType) -> str:
+def get_object_name(obj: ObjectType) -> typing.Optional[str]:
     """Get a name of a Python object."""
-    return getattr(obj, '__name__', '')
+    return getattr(obj, '__name__', None)
+
+
+@get_object_name.instance(type)
+def _get_object_name_type(obj: type) -> typing.Optional[str]:
+    return getattr(obj, '__name__', None)
+
+
+@get_object_name.instance(_GenericAlias)
+def _get_object_name_generic_alias(obj: _GenericAlias) -> typing.Optional[str]:
+    origin = get_object_name(typing.get_origin(obj))
+    type_args = ', '.join(map(
+        get_object_name,
+        typing.get_args(obj),
+    ))
+    return f'{origin}[{type_args}]'
 
 
 @get_object_name.instance(types.FunctionType)

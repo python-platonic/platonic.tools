@@ -7,7 +7,7 @@ Based on: https://stackoverflow.com/q/2020014/1245471
 import functools
 import inspect
 import types
-from typing import TypeVar, Optional
+from typing import TypeVar, Optional, _GenericAlias, get_origin
 
 import typing_inspect
 from typeclasses import typeclass
@@ -48,3 +48,8 @@ def _get_object_path_function(obj: types.FunctionType) -> Optional[str]:
 @get_object_path.instance(functools.partial)
 def _get_object_path_functools_partial(obj: functools.partial) -> str:
     return get_object_path(obj.func)
+
+
+@get_object_path.instance(_GenericAlias)
+def _get_object_name_generic_alias(obj: _GenericAlias) -> Optional[str]:
+    return get_object_path(get_origin(obj))
