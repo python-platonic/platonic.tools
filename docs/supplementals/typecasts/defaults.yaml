@@ -1,14 +1,7 @@
 $context:
   casts: $included
-  meta: $included
   seeAlso: rdfs:seeAlso
   label: rdfs:label
-  cast:
-    $type: PythonObject
-  source:
-    $type: PythonObject
-  destination:
-    $type: PythonObject
 $id: python://typecasts.casts
 casts:
 - source:

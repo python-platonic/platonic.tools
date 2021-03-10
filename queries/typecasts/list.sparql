@@ -1,0 +1,7 @@
+# Select all typecasts.
+SELECT ?source ?destination ?cast WHERE {
+  ?typecast
+    :cast ?cast ;
+    :source ?source ;
+    :destination ?destination .
+}

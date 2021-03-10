@@ -55,29 +55,14 @@ def main() -> None:
     document = {
         '$context': {
             'casts': '$included',
-            'meta': '$included',
-
             'seeAlso': 'rdfs:seeAlso',
             'label': 'rdfs:label',
-
-            'cast': {
-                '$type': 'PythonObject',
-            },
-            'source': {
-                '$type': 'PythonObject',
-            },
-            'destination': {
-                '$type': 'PythonObject',
-            },
         },
         '$id': 'python://typecasts.casts',
         'casts': list(serialized),
     }
 
-    # print(document['casts'][9])
     print(strictyaml.as_document(document).as_yaml())
-    # print(yaml.dump(document))
-    # print(json.dumps(document))
 
 
 if __name__ == '__main__':

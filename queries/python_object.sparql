@@ -1,0 +1,16 @@
+# Get parameters of a Python object.
+# Expects: ?iri
+SELECT * WHERE {
+  OPTIONAL {
+    ?iri rdfs:label ?label .
+  }
+
+  OPTIONAL {
+    ?iri :path ?path .
+  }
+
+  OPTIONAL {
+    ?iri rdfs:seeAlso ?link .
+  }
+}
+
