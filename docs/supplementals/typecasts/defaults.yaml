@@ -1,0 +1,102 @@
+$context:
+  casts: $included
+  meta: $included
+  seeAlso: rdfs:seeAlso
+  label: rdfs:label
+  cast:
+    $type: PythonObject
+  source:
+    $type: PythonObject
+  destination:
+    $type: PythonObject
+$id: python://typecasts.casts
+casts:
+- source:
+    label: dict
+    path: builtins.dict
+  destination:
+    label: str
+    path: builtins.str
+  cast:
+    label: json.dumps
+    path: json.dumps
+- source:
+    label: int
+    path: builtins.int
+  destination:
+    label: float
+    path: builtins.float
+  cast:
+    label: float
+    path: builtins.float
+- source:
+    label: int
+    path: builtins.int
+  destination:
+    label: bytes
+    path: builtins.bytes
+  cast:
+    label: bytes
+    path: builtins.bytes
+- source:
+    label: bytes
+    path: builtins.bytes
+  destination:
+    label: str
+    path: builtins.str
+  cast:
+    label: functools.partial(decode, encoding=utf-8)
+    path: builtins.bytes.decode
+- source:
+    label: str
+    path: builtins.str
+  destination:
+    label: bytes
+    path: builtins.bytes
+  cast:
+    label: encode
+    path: builtins.str.encode
+- source:
+    label: float
+    path: builtins.float
+  destination:
+    label: int
+    path: builtins.int
+  cast:
+    label: int
+    path: builtins.int
+- source:
+    label: BaseModel
+    path: pydantic.main.BaseModel
+  destination:
+    label: str
+    path: builtins.str
+  cast:
+    label: pydantic.pydantic_to_json_string
+    path: typecasts.defaults.pydantic.pydantic_to_json_string
+- source:
+    label: str
+    path: builtins.str
+  destination:
+    label: SubclassOf[BaseModel]
+    path: typecasts.types.SubclassOf
+  cast:
+    label: pydantic.json_string_to_pydantic
+    path: typecasts.defaults.pydantic.json_string_to_pydantic
+- source:
+    label: Dataclass
+    path: typecasts.types.Dataclass
+  destination:
+    label: NewType JSONString(str)
+  cast:
+    label: dataclass.dataclass_to_json_string
+    path: typecasts.defaults.dataclass.dataclass_to_json_string
+- source:
+    label: NewType JSONString(str)
+  destination:
+    label: SubclassOf[Dataclass]
+    path: typecasts.types.SubclassOf
+  cast:
+    label: dataclass.json_string_to_dataclass
+    path: typecasts.defaults.dataclass.json_string_to_dataclass
+

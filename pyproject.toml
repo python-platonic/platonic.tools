@@ -38,6 +38,7 @@ platonic-sqs = "^1.2.5"
 octadocs = "^0.0.26"
 pydantic = "^1.8.1"
 typeclasses = "^0.2.0"
+strictyaml = "^1.3.2"
 
 [tool.poetry.dev-dependencies]
 mister-jeeves = "^0.0.3"
