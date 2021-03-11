@@ -39,48 +39,6 @@ Before using an SQS queue, you have to create it. `platonic` is not responsible 
 
 Whatever solution you choose, `platonic-sqs` will require **the unique identifier — the URL — of your queue**.
 
-## Sending a message
-
-```python
-from platonic.sqs.queue import SQSSender
-
-numbers_out = SQSSender[int](
-    url='https://sqs.us-west-2.amazonaws.com/123456789012/queue-name',
-)
-
-numbers_out.send(15)
-numbers_out.send_many([1, 1, 2, 3, 5, 8, 13])
-```
-
-## Receive and acknowledge a message
-
-```python
-from platonic.sqs.queue import SQSReceiver
-from platonic.timeout import ConstantTimeout
-from datetime import timedelta
-
-input = SQSInputQueue[int](
-    url=...,
-    # Thus we prevent the receiver from blocking forever if queue is empty
-    timeout=ConstantTimeout(period=timedelta(minutes=3)),
-)
-
-# If the queue is empty, this call with block until there is a message.
-cmd = input.receive()
-assert cmd.value == 15
-
-# And now this must be acknowledged.
-input.acknowledge(cmd)
-
-# Or, you can iterate:
-for message in input:
-    with input.acknowledgement(message):
-        print(message.value)
-# 1
-# 2
-# ...
-```
-
 ## Code
 
 {% set receiver_path = 'platonic.sqs.queue.SQSReceiver' %}
