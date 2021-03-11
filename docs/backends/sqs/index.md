@@ -38,25 +38,3 @@ Before using an SQS queue, you have to create it. `platonic` is not responsible 
 - AWS CLI, AWS CloudFormation, AWS CDK, ...
 
 Whatever solution you choose, `platonic-sqs` will require **the unique identifier — the URL — of your queue**.
-
-## Code
-
-{% set receiver_path = 'platonic.sqs.queue.SQSReceiver' %}
-{% set receiver = import(receiver_path) %}
-
-### {{ receiver_path }}
-
-> {{ receiver.__doc__ }}
-
-{{ receiver | print_dataclass }}
-
----
-
-{% set sender_path = 'platonic.sqs.queue.SQSSender' %}
-{% set sender = import(sender_path) %}
-
-### {{ sender_path }}
-
-> {{ sender.__doc__ }}
-
-{{ sender | print_dataclass }}
