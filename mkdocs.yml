@@ -45,3 +45,7 @@ theme:
 
 extra_css:
   - css/custom.css
+
+extra:
+  # Dummy SQS queue URL for demonstration purposes
+  sqs_queue_url: https://sqs.us-west-2.amazonaws.com/123456789012/queue-name
