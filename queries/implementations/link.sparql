@@ -1,0 +1,7 @@
+# Print a link to a page given by $id.
+# Accepts: ?iri
+SELECT ?title ?url WHERE {
+  ?iri
+    octa:title ?title ;
+    octa:subjectOf / octa:url ?url .
+}

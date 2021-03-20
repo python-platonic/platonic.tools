@@ -1,0 +1,7 @@
+# Print all implementations with their backends and interfaces.
+SELECT * WHERE {
+  ?implementation
+    a :Implementation ;
+    :backend ?backend ;
+    :interface ?interface .
+}

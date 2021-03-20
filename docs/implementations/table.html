@@ -1,0 +1,27 @@
+{% macro link(iri) %}
+  {% set links = queries.implementations.link(iri=iri) %}
+  {% if links %}
+    <a href="{{ links.0.url }}">{{ links.0.title }}</a>
+  {% else %}
+    {{ iri }}?!
+  {% endif %}
+{% endmacro %}
+
+<table>
+  <thead>
+    <tr>
+      <th>Interface</th>
+      <th>Backend</th>
+      <th>Implementation</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in queries.implementations.list() %}
+    <tr>
+      <td>{{ link(row.interface) }}
+      <td>{{ link(row.backend) }}
+      <td>{{ link(row.implementation) }}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

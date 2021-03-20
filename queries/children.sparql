@@ -1,0 +1,13 @@
+# Show all children of a given page.
+# Expects: ?this
+SELECT ?page ?title ?url WHERE {
+  ?this octa:isParentOf ?page .
+
+  ?page
+    octa:title ?title ;
+    octa:url ?url .
+
+  OPTIONAL {
+    ?page octa:position ?position .
+  }
+} ORDER BY ?position ?title
