@@ -1,2 +1,6 @@
 title: octa:title
 position: octa:position
+backend:
+  $type: $id
+interface:
+  $type: $id

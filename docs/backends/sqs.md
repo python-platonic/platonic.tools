@@ -1,4 +1,5 @@
 ---
+$id: SQS
 title: Amazon SQS
 $type: Backend
 ---

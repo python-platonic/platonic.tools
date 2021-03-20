@@ -1,4 +1,5 @@
 ---
+$id: Queue
 title: Queue
 $type: Interface
 ---

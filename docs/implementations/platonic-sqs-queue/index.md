@@ -1,5 +1,6 @@
 ---
 title: Queue/SQS
+$id: platonic-sqs-queue
 $type: Implementation
 backend: SQS
 interface: Queue

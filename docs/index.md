@@ -7,18 +7,6 @@ Data structures for Clean Architecture applications in Python.
 * Port code from one backend to another;
 * Maintain static typing correctness.
 
+## Available implementations
 
-|                 | queue             | iterable | dict | list | set | graph |
-| ---             | ---               | ---      | ---  | ---  | --- | ---   |
-| Amazon DynamoDB |                   |          |      |      |     |      |
-| Amazon SimpleDB |                   |          |      |      |     |      |
-| Amazon SQS      | [✔](backends/sqs.md) |          | ❌    |      |     |      |
-| Amazon S3       |                   |          |      |      |     |      |
-| Apache Kafka    |                   |          |      |      |     |      |
-| Azure CosmosDB  |                   |          |      |      |     |      |
-| MongoDB         |                   |          |      |      |     |      |
-| MySQL           |                   |          |      |      |     |      |
-| Local FS        |                   |          |      |      |     |      |
-| OrientDB        |                   |          |      |      |     |      |
-| PostgreSQL      |                   |          |      |      |     |      |
-| Redis           |                   |          |      |      |     |      |
+{% include "implementations/table.html" %}
