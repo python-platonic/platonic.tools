@@ -12,7 +12,7 @@ Data structures for Clean Architecture applications in Python.
 | ---             | ---               | ---      | ---  | ---  | --- | ---   |
 | Amazon DynamoDB |                   |          |      |      |     |      |
 | Amazon SimpleDB |                   |          |      |      |     |      |
-| Amazon SQS      | [✔](backends/sqs/index.md) |          | ❌    |      |     |      |
+| Amazon SQS      | [✔](backends/sqs.md) |          | ❌    |      |     |      |
 | Amazon S3       |                   |          |      |      |     |      |
 | Apache Kafka    |                   |          |      |      |     |      |
 | Azure CosmosDB  |                   |          |      |      |     |      |

@@ -1,5 +1,6 @@
 ---
 title: Decisions
+position: 5
 ---
 
 Here, we document:

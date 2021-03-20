@@ -1,18 +1,7 @@
 ---
-title: SQS/Queue
+title: Amazon SQS
+$type: Backend
 ---
-
-| Data structure              | Backend                            |
-| ---                         | ---                                |
-| [Queue](/structures/queue/) | [SQS](https://aws.amazon.com/sqs/) |
-
-## Installation
-
-```bash
-pip install platonic-sqs
-```
-
-## What is SQS?
 
 Amazon Simple Queue Service is the default choice to communicate data between services on AWS.
 
@@ -25,7 +14,6 @@ SQS comes in two flavors: [Standard](https://docs.aws.amazon.com/AWSSimpleQueueS
 | [Delivery](/structures/queue/#delivery-guarantees) | ⩾1             | =1 |
 | [Order preserved](/structures/queue/#order-preservation) | ❌ | ✔ |
 | Pricing    | Lower 🙂   | Higher 🙁 |
-
 
 ### Visibility timeout
 
