@@ -17,3 +17,10 @@ Yes, when the nature of the data structure permits that. Say, a mapping can be r
 > Repository also supports the objective of achieving a clean separation and one-way dependency between the domain and data mapping layers.
 
 Quoted from: [Thoughtworks → Patterns of Enterprise Application Architecture → Repository](https://martinfowler.com/eaaCatalog/repository.html).
+
+### Alternatives
+
+[Dapr](https://dapr.io/) is a cloud-native application framework from Microsoft. Seems to abstract things like PubSub, key-value storages and remote procedure calls. Here is a [Python SDK example](https://github.com/dapr/python-sdk/blob/master/examples/w3c-tracing/invoke-caller.py). 
+
+- Does not involve Python typing;
+- Is a framework, not a library. I prefer libraries because they do not impose any hard-wired architecture patterns upon you.
